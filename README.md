@@ -1,0 +1,4 @@
+MUD
+==
+
+Simple MUD
