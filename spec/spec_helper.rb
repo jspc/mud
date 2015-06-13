@@ -1,7 +1,10 @@
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
+require 'simplecov'
+SimpleCov.start
 
 require 'mud/room'
 require 'mud/graph'
+require 'mud/player'
 
 require 'factory_girl'
 require 'rspec'
