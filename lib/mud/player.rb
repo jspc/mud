@@ -1,5 +1,5 @@
 class Player
-  attr_accessor :weapons, :items, :strength, :speed, :luck, :vision, :cash
+  attr_accessor :weapons, :items, :strength, :speed, :luck, :vision, :cash, :health
 
   def initialize
     @weapons = []
