@@ -7,3 +7,4 @@ group :test do
 end
 
 gem 'celluloid-io'
+gem 'treetop'
