@@ -7,13 +7,20 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
+    celluloid (0.16.0.pre)
+      timers (~> 2.0.0)
+    celluloid-io (0.16.0.pre)
+      celluloid (>= 0.16.0.pre)
+      nio4r (>= 1.0.0)
     diff-lcs (1.2.5)
     docile (1.1.5)
     factory_girl (4.5.0)
       activesupport (>= 3.0.0)
+    hitimes (1.2.2)
     i18n (0.6.11)
     json (1.8.1)
     minitest (5.4.1)
+    nio4r (1.1.0)
     rspec (3.3.0)
       rspec-core (~> 3.3.0)
       rspec-expectations (~> 3.3.0)
@@ -33,6 +40,8 @@ GEM
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.0)
     thread_safe (0.3.4)
+    timers (2.0.0)
+      hitimes
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
 
@@ -40,6 +49,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  celluloid-io
   factory_girl (~> 4.0)
   rspec
   simplecov

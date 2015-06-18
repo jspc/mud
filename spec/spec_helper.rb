@@ -5,6 +5,7 @@ SimpleCov.start
 require 'mud/room'
 require 'mud/graph'
 require 'mud/player'
+require 'mud/server'
 
 require 'factory_girl'
 require 'rspec'

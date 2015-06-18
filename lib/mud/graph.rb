@@ -5,9 +5,9 @@ class Graph
   attr_reader :graph
 
   def initialize
-    @width  = 10
-    @height = 20
     yield self if block_given?
+    @width  ||= 10
+    @height ||= 20
 
     @graph = []
     @height.times do |y|
