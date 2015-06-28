@@ -1,7 +1,15 @@
+# Simple room class
 class Room
   attr_writer :top, :bottom, :left, :right, :x, :y
   attr_accessor :coords
 
+  # Creates a room object
+  #
+  # ===== Attributes
+  # * +:x+ - x position on map
+  # * +:y+ - y position on map
+  # * +:top+ - boolean, whether at top
+  #   * (etc. for left, right, bottom)
   def initialize
     @x = 0
     @y = 0

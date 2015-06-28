@@ -1,9 +1,18 @@
 require 'mud/room'
 
+# Largely our map and relevent navigation code for
+# the dungeon it's self
+#
+# Contains arrays of arrays of Rooms
 class Graph
   attr_writer :width, :height
   attr_reader :graph
 
+  # Initialise the graph with a block
+  #
+  # ===== Attributes
+  # * +:width+ - Width of the map
+  # * +:height+ - Height of the map
   def initialize
     yield self if block_given?
     @width  ||= 10
@@ -33,6 +42,13 @@ class Graph
     end
   end
 
+  # Returns coordinates of next room should the direction be available
+  #
+  # For instance: on the left most side of the map one cannot go any further left
+  #
+  # ===== Attributes
+  # * +room+ - current room object
+  # * +direction+ - direction to move in, if possible
   def traverse room, direction
     case direction.to_sym
     when :right
