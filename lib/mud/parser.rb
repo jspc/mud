@@ -4,62 +4,69 @@ require 'mud/movement'
 GRAMMARS = File.join(File.dirname(__FILE__), 'grammars')
 require File.join(GRAMMARS, 'node_extensions.rb')
 
-module Error
-  module Parser
-    class InvalidStatement < ArgumentError ; end
-  end
+module ParsingError
+  class InvalidStatement < ArgumentError ; end
+  class InvalidCommand < ArgumentError ; end
+  class InvalidContext < ArgumentError ; end
 end
 
 class Parser
-  Treetop.load(File.join(GRAMMARS, 'moves_parser.treetop'))
-  @@moves = MovesParser.new
+  def initialize
+    Treetop.load(File.join(GRAMMARS, 'moves_parser.treetop'))
+    @moves = MovesParser.new
 
-  @@movement_syns = %w{run move go walk travel}
-  @@movement_contexts = %w{run}
-
-  def self.parse data
-    tree = @@moves.parse(data)
-    if tree.nil?
-      raise Error::Parser::InvalidStatement,
-            ["'#{data}' is not a valid statement",
-             @@moves.failure_line,
-             @@moves.failure_reason].join('. ')
-    end
-
-    self.clean_tree(tree)
-    self.elucidate(tree.elems)
-    return tree.elems
+    @movement_syns = %w{run move go walk travel}
+    @movement_contexts = %w{run}
   end
 
-  private
-  def self.clean_tree rn
+  def parse! data
+    @commands = []
+    tree = @moves.parse(data)
+    if tree.nil?
+      raise ParsingError::InvalidStatement,
+            ["'#{data}' is not a valid statement",
+             @moves.failure_line,
+             @moves.failure_reason].join('. ')
+    end
+
+    clean_tree(tree)
+    elucidate(tree.elems)
+    @commands
+  end
+
+  def clean_tree rn
     return if(rn.elements.nil?)
     rn.elements.delete_if{|n| n.class.name == "Treetop::Runtime::SyntaxNode" }
-    rn.elements.each {|n| self.clean_tree(n) }
+    rn.elements.each {|n| clean_tree(n) }
   end
 
-  def self.elucidate tree, context=nil
-    puts "Elucidating on #{tree}"
-    t_s = tree.clone
+  def elucidate tree, context=nil
+    # The point here is to iterate rescursively to figure-out
+    # What the user is hoping to achieve
+
     until tree.empty?
-      p tree
       subj = tree.shift
-      puts "subj: #{subj}"
-      puts "tree: #{tree}"
 
       if subj.is_a?(Array)
-        puts "elucidate on #{subj}"
         self.elucidate(subj, context)
-      end
 
-      if subj.is_a?(Hash) and not subj.has_key?(:argument)
+      elsif subj.is_a?(Hash) and not subj.has_key?(:argument)
         self.elucidate(tree.shift, subj[:command].to_s)
+
+      else
+        if @movement_syns.include?(subj[:command].to_s)
+          if context and not @movement_contexts.include?(context)
+            raise ParsingError::InvalidContext,
+                  "'#{context}' is not a valid context for movement"
+          end
+          @commands << Movement.new(subj[:argument].to_s, context)
+        else
+          raise ParsingError::InvalidCommand,
+                "'#{subj[:command]}' is not a valid command"
+
+        end
       end
-
-      puts "obj: #{Movement.new(subj[:argument], context)}"
     end
-
-    puts "Done elucidating on #{t_s}"
   end
 
 end
