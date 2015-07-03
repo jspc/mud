@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 describe Player do
   context 'when using a strong character' do
     let(:player){build(:player_high)}
